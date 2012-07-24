@@ -473,7 +473,7 @@ abstract class IsotopeProductCollection extends Model
 			$this->arrCache['lastAdded'] = 0;
 			$lastAdded = 0;
 
-			$objItems = $this->Database->prepare("SELECT * FROM " . $this->ctable . " WHERE pid=?")->executeUncached($this->id);
+			$objItems = $this->Database->prepare("SELECT * FROM " . $this->ctable . " WHERE pid=? ORDER by id")->executeUncached($this->id);
 
 			while ($objItems->next())
 			{
