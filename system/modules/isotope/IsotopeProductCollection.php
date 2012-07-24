@@ -83,6 +83,12 @@ abstract class IsotopeProductCollection extends Model
 	protected $strTemplate = 'iso_invoice';
 
 	/**
+	 * Title
+	 * @var string
+	 */
+	protected $strTitle;
+
+	/**
 	 * Configuration
 	 * @var array
 	 */
@@ -837,7 +843,9 @@ abstract class IsotopeProductCollection extends Model
 			$objTemplate->logoImage = '<img src="' . $this->Environment->base . '/' . $this->Isotope->Config->invoiceLogo . '" alt="" />';
 		}
 
-		$objTemplate->invoiceTitle = $GLOBALS['TL_LANG']['MSC']['iso_invoice_title'] . ' ' . $this->order_id . ' – ' . date($GLOBALS['TL_CONFIG']['datimFormat'], $this->date);
+    	$this->strTitle = $this->strTitle ? $this->strTitle : $GLOBALS['TL_LANG']['MSC']['iso_invoice_title'];
+
+		$objTemplate->invoiceTitle = $this->strTitle . ' ' . $this->order_id . ' – ' . date($GLOBALS['TL_CONFIG']['datimFormat'], $this->date);
 
 		$arrItems = array();
 		$arrProducts = $this->getProducts();

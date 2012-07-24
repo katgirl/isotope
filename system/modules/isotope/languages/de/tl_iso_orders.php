@@ -88,8 +88,8 @@ $GLOBALS['TL_LANG']['tl_iso_orders']['export_emails'][0] = 'Exportiere Bestell-E
 $GLOBALS['TL_LANG']['tl_iso_orders']['export_emails'][1] = 'Alle E-Mails für diejenigen die bestellten exportieren.';
 $GLOBALS['TL_LANG']['tl_iso_orders']['print_invoices'][0] = 'Rechnungen drucken';
 $GLOBALS['TL_LANG']['tl_iso_orders']['print_invoices'][1] = 'Eine oder mehrere Rechnungen in ein Einzeldokument eines bestimmten Bestellstatus\' drucken.';
-
-
+$GLOBALS['TL_LANG']['tl_iso_orders']['grandTotal'][0] = 'Bestellsumme';
+$GLOBALS['TL_LANG']['tl_iso_orders']['grandTotal'][1] = 'Summe der Bestellung';
 /**
  * Legends
  */
