@@ -227,16 +227,19 @@ class IsotopeProduct extends Controller
 						// Add "price_tiers" to variant attributes, so the field is updated through ajax
 						$this->arrVariantAttributes[] = 'price_tiers';
 
-						$objProduct = $this->Database->execute("SELECT MIN(p3.price) AS low_price, MAX(p3.price) AS high_price
-																				FROM tl_iso_prices p1
-																				LEFT JOIN tl_iso_products p2 ON p1.pid=p2.id
-																				LEFT JOIN tl_iso_price_tiers p3	ON p3.pid=p1.id
-																				WHERE p2.id IN (" . implode(',', $this->arrVariantOptions['ids']) . ")
-																				AND p1.config_id IN (" . (int) $this->Isotope->Config->id . ",0)
-																				AND p1.member_group IN(" . ((FE_USER_LOGGED_IN === true && count($this->User->groups)) ? (implode(',', $this->User->groups).',') : '') . "0)
-																				AND (p1.start='' OR p1.start<$time)
-																				AND (p1.stop='' OR p1.stop>$time)		
-																           ");
+					  $objProduct = $this->Database->execute
+		                      ("SELECT MIN(price) AS low_price, MAX(price) AS high_price
+													  FROM tl_iso_price_tiers
+													  WHERE pid IN
+													  (
+													   SELECT p1.id FROM tl_iso_prices p1 LEFT JOIN tl_iso_products p2 ON p1.pid=p2.id
+														 WHERE p1.pid IN (" . implode(',', $this->arrVariantOptions['ids']) . ")
+															AND p1.config_id IN (" . (int) $this->Isotope->Config->id . ",0)
+															AND p1.member_group IN(" . ((FE_USER_LOGGED_IN === true && count($this->User->groups)) ? (implode(',', $this->User->groups).',') : '') . "0)
+															AND (p1.start='' OR p1.start<$time)
+															AND (p1.stop='' OR p1.stop>$time)
+													  )"
+													);     
 					}
 					else
 					{
