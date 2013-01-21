@@ -289,31 +289,12 @@ class IsotopeOrder extends IsotopeProductCollection
 		$objCart->delete();
 
 		$this->checkout_complete = true;
-		$this->status = $this->new_order_status;
-		$arrData = $this->email_data;
-		$arrData['order_id'] = $this->generateOrderId();
+		$this->status = ($this->new_order_status ? $this->new_order_status : $this->Isotope->Config->orderstatus_new);
+		
+		$this->generateOrderId();
+		$arrData = $this->getEmailData();
 
-		foreach ($this->billing_address as $k => $v)
-		{
-			$arrData['billing_' . $k] = $this->Isotope->formatValue('tl_iso_addresses', $k, $v);
-		}
-
-		foreach ($this->shipping_address as $k => $v)
-		{
-			$arrData['shipping_' . $k] = $this->Isotope->formatValue('tl_iso_addresses', $k, $v);
-		}
-
-		if ($this->pid > 0)
-		{
-			$objUser = $this->Database->execute("SELECT * FROM tl_member WHERE id=" . (int) $this->pid);
-
-			foreach ($objUser->row() as $k => $v)
-			{
-				$arrData['member_' . $k] = $this->Isotope->formatValue('tl_member', $k, $v);
-			}
-		}
-
-		$this->log('New order ID ' . $this->id . ' has been placed', 'IsotopeOrder checkout()', TL_ACCESS);
+		$this->log('New order ID ' . $this->id . ' has been placed', __METHOD__, TL_ACCESS);
 
 		if ($this->iso_mail_admin && $this->iso_sales_email != '')
 		{
@@ -388,6 +369,52 @@ class IsotopeOrder extends IsotopeProductCollection
 		}
 
 		return false;
+	}
+	
+		/**
+	 * Retrieve the array of email data for parsing simple tokens
+	 * @return array
+	 */
+	public function getEmailData()
+	{
+		$arrData = $this->email_data;
+		$arrData['id'] = $this->id;
+		$arrData['order_id'] = $this->order_id;
+		$arrData['uniqid'] = $this->uniqid;
+		$arrData['status'] = $this->status;
+		$arrData['status_id'] = $this->arrData['status'];
+
+		foreach ($this->billing_address as $k => $v)
+		{
+			$arrData['billing_' . $k] = $this->Isotope->formatValue('tl_iso_addresses', $k, $v);
+		}
+
+		foreach ($this->shipping_address as $k => $v)
+		{
+			$arrData['shipping_' . $k] = $this->Isotope->formatValue('tl_iso_addresses', $k, $v);
+		}
+
+		if ($this->pid > 0)
+		{
+			$objUser = $this->Database->execute("SELECT * FROM tl_member WHERE id=" . (int) $this->pid);
+
+			foreach ($objUser->row() as $k => $v)
+			{
+				$arrData['member_' . $k] = $this->Isotope->formatValue('tl_member', $k, $v);
+			}
+		}
+
+		// !HOOK: add custom email tokens
+		if (isset($GLOBALS['ISO_HOOKS']['getOrderEmailData']) && is_array($GLOBALS['ISO_HOOKS']['getOrderEmailData']))
+		{
+			foreach ($GLOBALS['ISO_HOOKS']['getOrderEmailData'] as $callback)
+			{
+				$objCallback = (in_array('getInstance', get_class_methods($callback[0]))) ? call_user_func(array($callback[0], 'getInstance')) : new $callback[0]();
+				$arrData = $objCallback->$callback[1]($this, $arrData);
+			}
+		}
+
+		return $arrData;
 	}
 
 
