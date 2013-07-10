@@ -660,7 +660,6 @@ class ModuleIsotopeCheckout extends ModuleIsotope
 					'info'		     => $this->Isotope->Cart->Payment->checkoutReview(),
 					'note'		     => $this->Isotope->Cart->Payment->note,
 					'mail_note'    => $this->Isotope->Cart->Payment->mail_note,
-					'invoice_note' => $this->Isotope->Cart->Payment->invoice_note,
 					'edit'		     => $this->addToUrl('step=payment', true),
 				),
 			);
@@ -763,8 +762,6 @@ class ModuleIsotopeCheckout extends ModuleIsotope
 			$this->arrOrderData['payment_note_text']	= strip_tags($this->Isotope->Cart->Payment->note);
 			$this->arrOrderData['payment_mail_note']			= $this->Isotope->Cart->Payment->mail_note;
 			$this->arrOrderData['payment_mail_note_text']	= strip_tags($this->Isotope->Cart->Payment->mail_note);
-			$this->arrOrderData['payment_invoice_note']			  = $this->Isotope->Cart->Payment->invoice_note;
-			$this->arrOrderData['payment_invoice_note_text']	= strip_tags($this->Isotope->Cart->Payment->invoice_note);
 		}
 
 		return $objTemplate->parse();

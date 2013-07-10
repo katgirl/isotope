@@ -43,7 +43,7 @@ class PaymentPaypal extends IsotopePayment
 	 */
 	public function statusOptions()
 	{
-		return array('pending', 'processing', 'complete', 'on_hold');
+		return $GLOBALS['ISO_PAY_STATE']['paypal'];
 	}
 
 
@@ -138,11 +138,14 @@ class PaymentPaypal extends IsotopePayment
 
 			$arrPayment['status'] = $this->Input->post('payment_status');
 			$arrData['new_payment_status'] = $arrPayment['status'];
-
+      
+      $this->log('Status "' . $arrPayment['status'], __METHOD__, TL_ERROR);
+      
 			// array('pending','processing','complete','on_hold', 'cancelled'),
 			switch( $arrPayment['status'] )
 			{
-				case 'Completed':
+			  case 'Completed':
+				case 'awaiting_printable_files':
 					$objOrder->date_paid = time();
 					break;
 

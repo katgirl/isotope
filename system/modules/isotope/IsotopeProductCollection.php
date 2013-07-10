@@ -706,7 +706,7 @@ abstract class IsotopeProductCollection extends Model
 
 		$time = time();
 		$arrIds = array();
-	 	$objOldItems = $this->Database->execute("SELECT * FROM {$objCollection->ctable} WHERE pid={$objCollection->id}");
+	 	$objOldItems = $this->Database->execute("SELECT * FROM {$objCollection->ctable} WHERE pid={$objCollection->id} ORDER BY id");
 
 		while ($objOldItems->next())
 		{
@@ -832,7 +832,7 @@ abstract class IsotopeProductCollection extends Model
 		{
 			$this->Isotope->overrideConfig($this->config_id);
 		}
-
+		
 		$objTemplate = new BackendTemplate($this->strTemplate);
 		$objTemplate->setData($this->arrData);
 		$objTemplate->logoImage = '';
@@ -843,7 +843,7 @@ abstract class IsotopeProductCollection extends Model
 			$objTemplate->logoImage = '<img src="' . $this->Environment->base . '/' . $this->Isotope->Config->invoiceLogo . '" alt="" />';
 		}
 
-    	$this->strTitle = $this->strTitle ? $this->strTitle : $GLOBALS['TL_LANG']['MSC']['iso_invoice_title'];
+    $this->strTitle = $this->strTitle ? $this->strTitle : $GLOBALS['TL_LANG']['MSC']['iso_invoice_title'];
 
 		$objTemplate->invoiceTitle = $this->strTitle . ' ' . $this->order_id . ' – ' . date($GLOBALS['TL_CONFIG']['datimFormat'], $this->date);
 
@@ -854,15 +854,15 @@ abstract class IsotopeProductCollection extends Model
 		{
 			$arrItems[] = array
 			(
-				'raw'				=> $objProduct->getData(),
+				'raw'				        => $objProduct->getData(),
 				'product_options' 	=> $objProduct->getOptions(),
-				'name'				=> $objProduct->name,
-				'quantity'			=> $objProduct->quantity_requested,
-				'price'				=> $objProduct->formatted_price,
-				'total'				=> $objProduct->formatted_total_price,
-				'tax_id'			=> $objProduct->tax_id,
+				'name'				      => $objProduct->name,
+				'quantity'			    => $objProduct->quantity_requested,
+				'price'				      => $objProduct->formatted_price,
+				'total'				      => $objProduct->formatted_total_price,
+				'tax_id'			      => $objProduct->tax_id,
 			);
-		}
+		}	
 		
 		$objTemplate->config = $this->Isotope->Config->getData(); 	
 		$objTemplate->info = deserialize($this->checkout_info);
@@ -879,34 +879,36 @@ abstract class IsotopeProductCollection extends Model
 
 		$objTemplate->surcharges = IsotopeFrontend::formatSurcharges($this->getSurcharges());
 		$objTemplate->billing_label = $GLOBALS['TL_LANG']['ISO']['billing_address'];
-		$objTemplate->billing_address = $this->Isotope->generateAddressString(deserialize($this->billing_address), $this->Isotope->Config->billing_fields);
+		$objTemplate->billing_address = deserialize($this->billing_address);	
+		$objTemplate->payment_label = $GLOBALS['TL_LANG']['ISO']['payment_method'];
+		$objTemplate->payment_method = $this->Payment->name;
+		$objTemplate->shipping_label = $GLOBALS['TL_LANG']['ISO']['shipping_method'];
+		$objTemplate->shipping_method = $this->Shipping->name;
 
-		if (strlen($this->shipping_method))
+		$arrShippingAddress = deserialize($this->shipping_address);
+
+		if (!is_array($arrShippingAddress))
 		{
-			$arrShippingAddress = deserialize($this->shipping_address);
-
-			if (!is_array($arrShippingAddress) || $arrShippingAddress['id'] == -1)
-			{
-				$objTemplate->has_shipping = false;
-				$objTemplate->billing_label = $GLOBALS['TL_LANG']['ISO']['billing_shipping_address'];
-			}
-			else
-			{
-				$objTemplate->has_shipping = true;
-				$objTemplate->shipping_label = $GLOBALS['TL_LANG']['ISO']['shipping_address'];
-				$objTemplate->shipping_address = $this->Isotope->generateAddressString($arrShippingAddress, $this->Isotope->Config->shipping_fields);
-			}
+			$objTemplate->has_shipping = true;
+			$objTemplate->billing_label = $GLOBALS['TL_LANG']['ISO']['shipping_address'];
+			$objTemplate->shipping_address = deserialize($this->billing_address);	
+		}
+		else
+		{
+			$objTemplate->has_shipping = true;
+			$objTemplate->shipping_label = $GLOBALS['TL_LANG']['ISO']['shipping_address'];
+			$objTemplate->shipping_address = $arrShippingAddress;		
 		}
 		
-		// HOOK for edit Template when generate
+		// HOOK for adding additional functionality when generate
 		if (isset($GLOBALS['ISO_HOOKS']['generateCollection']) && is_array($GLOBALS['ISO_HOOKS']['generateCollection']))
 		{
 			foreach ($GLOBALS['ISO_HOOKS']['generateCollection'] as $callback)
 			{
 				$this->import($callback[0]);
-				$objTemplate = $this->$callback[0]->$callback[1]($objTemplate, $this);
+				$this->$callback[0]->$callback[1]($objTemplate, $this);
 			}
-		}
+		}		
 
 		$strArticle = $this->Isotope->replaceInsertTags($objTemplate->parse());
 		$strArticle = html_entity_decode($strArticle, ENT_QUOTES, $GLOBALS['TL_CONFIG']['characterSet']);

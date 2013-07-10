@@ -44,7 +44,7 @@ class PaymentCash extends IsotopePayment
 	 */
 	public function statusOptions()
 	{
-		return array('pending', 'processing', 'complete', 'on_hold');
+		return $GLOBALS['ISO_PAY_STATE']['cash'];
 	}
 
 

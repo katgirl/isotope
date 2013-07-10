@@ -581,9 +581,9 @@ class IsotopeProduct extends Controller
   {
     $arrData = array();
     $arrAttributes = array_unique(array_merge($this->arrAttributes, $this->arrVariantAttributes));
-
+    
     foreach ($arrAttributes as $attribute)
-    {
+    {   
       $arrData[$attribute] = $this->$attribute;
     }
 

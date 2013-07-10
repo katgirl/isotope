@@ -112,6 +112,7 @@ $GLOBALS['TL_DCA']['tl_iso_orders'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_iso_orders']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
+				
 			),
 			'delete' => array
 			(

@@ -211,7 +211,7 @@ abstract class IsotopePayment extends Frontend
 	 */
 	public function statusOptions()
 	{
-		return array('pending', 'processing');
+		return $GLOBALS['ISO_PAY_STATE']['_default_'];
 	}
 
 

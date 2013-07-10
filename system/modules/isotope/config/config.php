@@ -241,6 +241,13 @@ $GLOBALS['ISO_ORDER'] = array('pending', 'processing', 'complete', 'on_hold', 'c
 
 
 /**
+ * Payment Statuses
+ */
+$GLOBALS['ISO_PAY_STATE']['_default_']         = array('pending', 'processing');
+$GLOBALS['ISO_PAY_STATE']['cash']						   = array('pending', 'processing', 'complete', 'on_hold');
+$GLOBALS['ISO_PAY_STATE']['paypal']					   = array('pending', 'processing', 'complete', 'on_hold');
+
+/**
  * Permissions are access settings for user and groups (fields in tl_user and tl_user_group)
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'iso_modules';
