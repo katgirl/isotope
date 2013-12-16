@@ -118,7 +118,7 @@ class AttributeWizard extends \Backend
     public function getLegends($objWidget)
     {
         $arrLegends = $GLOBALS['TL_DCA'][\Isotope\Model\Attribute::getTable()]['fields']['legend']['options'];
-        $arrLegends = array_intersect_key($GLOBALS['TL_LANG'][\Isotope\Model\Product::getTable()], array_flip($arrLegends));
+        $arrLegends = is_array($arrLegends) ? array_intersect_key($GLOBALS['TL_LANG'][\Isotope\Model\Product::getTable()], array_flip($arrLegends)) : '';
 
         $varValue = $objWidget->value;
 
