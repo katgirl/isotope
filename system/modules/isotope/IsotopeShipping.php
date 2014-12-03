@@ -292,7 +292,7 @@ abstract class IsotopeShipping extends Frontend
 								$this->arrData['tax_class'],
 								$objCollection->getProducts(),
 								$this,
-                $this->Isotope->Cart->subTotal2;
+                $this->Isotope->Cart->subTotal2);
 	}
 }
 
