@@ -172,7 +172,7 @@ abstract class IsotopeShipping extends Frontend
 				if ($blnPercentage)
 				{
 					$fltSurcharge = (float)substr($strPrice, 0, -1);
-					$fltPrice = $this->Isotope->Cart->subTotal / 100 * $fltSurcharge;
+					$fltPrice = $this->Isotope->Cart->subTotal2 / 100 * $fltSurcharge;
 				}
 				else
 				{
@@ -291,7 +291,8 @@ abstract class IsotopeShipping extends Frontend
 								($GLOBALS['TL_LANG']['MSC']['shippingLabel'] . ' (' . $this->label . ')'),
 								$this->arrData['tax_class'],
 								$objCollection->getProducts(),
-								$this);
+								$this,
+                $this->Isotope->Cart->subTotal2;
 	}
 }
 

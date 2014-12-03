@@ -102,7 +102,7 @@ abstract class IsotopePayment extends Frontend
 			case 'label':
 				return $this->Isotope->translate($this->arrData['label'] ? $this->arrData['label'] : $this->arrData['name']);
 				break;
-
+        
 			case 'available':
 				if (!$this->enabled && BE_USER_LOGGED_IN !== true)
 				{
@@ -167,9 +167,9 @@ abstract class IsotopePayment extends Frontend
 				$blnPercentage = substr($strPrice, -1) == '%' ? true : false;
 
 				if ($blnPercentage)
-				{
+				{          
 					$fltSurcharge = (float) substr($strPrice, 0, -1);
-					$fltPrice = $this->Isotope->Cart->subTotal / 100 * $fltSurcharge;
+					$fltPrice = $this->Isotope->Cart->subTotal2 / 100 * $fltSurcharge;
 				}
 				else
 				{
@@ -299,14 +299,15 @@ abstract class IsotopePayment extends Frontend
 		if ($this->arrData['price'] == 0)
 		{
 			return false;
-		}
+		} 
 
 		return $this->Isotope->calculateSurcharge(
 								$this->arrData['price'],
 								($GLOBALS['TL_LANG']['MSC']['paymentLabel'] . ' (' . $this->label . ')'),
 								$this->arrData['tax_class'],
 								$objCollection->getProducts(),
-								$this);
+								$this,
+                $this->Isotope->Cart->subTotal2);
 	}
 
 

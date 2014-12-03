@@ -204,13 +204,39 @@ abstract class IsotopeProductCollection extends Model
 
 					foreach ($arrProducts as $objProduct)
 					{
-					    $varPrice = $objProduct->total_price;
+            $varPrice = $objProduct->total_price;
 
-					    if ($varPrice !== null)
-					    {
-    						$fltTotal += $varPrice;
-    				    }
-					}
+            if ($varPrice !== null)
+            {
+              $fltTotal += $varPrice;
+            }
+					}          
+
+					$this->arrCache[$strKey] = $fltTotal;
+					break;
+
+				case 'subTotal2':
+					$fltTotal = 0;
+					$arrProducts = $this->getProducts();
+          $arrSurcharges = $this->getSurcharges();
+          
+					foreach ($arrProducts as $objProduct)
+					{
+            $varPrice = $objProduct->total_price;
+
+            if ($varPrice !== null)
+            {
+              $fltTotal += $varPrice;
+            }
+					}    
+          
+          foreach ($arrSurcharges as $arrSurcharge)
+          {
+            if ($arrSurcharge['add'] !== false)
+            {                     
+              $fltTotal += $arrSurcharge['total_price'];
+            }
+          }      
 
 					$this->arrCache[$strKey] = $fltTotal;
 					break;
@@ -1033,9 +1059,9 @@ abstract class IsotopeProductCollection extends Model
 //			$pdf->SetSubject($objInvoice->title);
 //			$pdf->SetKeywords($objInvoice->keywords);
 
-			// Remove default header/footer
+			// Remove default header
 			$pdf->setPrintHeader(false);
-			$pdf->setPrintFooter(false);
+      $pdf->setPrintFooter(false);
 
 			// Set margins
 			$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
@@ -1062,7 +1088,7 @@ abstract class IsotopeProductCollection extends Model
 		if ($blnOutput)
 		{
 			// Close and output PDF document
-			// @todo $strInvoiceTitle is not defined
+			$strInvoiceTitle = $GLOBALS['TL_LANG']['MSC']['iso_invoice_title'] . '_' . $this->order_id;
 			$pdf->lastPage();
 			$pdf->Output(standardize(ampersand($strInvoiceTitle, false), true) . '.pdf', 'D');
 
@@ -1073,4 +1099,3 @@ abstract class IsotopeProductCollection extends Model
 		return $pdf;
 	}
 }
-
