@@ -101,7 +101,7 @@ abstract class IsotopePayment extends Frontend
 		{
 			case 'label':
 				return $this->Isotope->translate($this->arrData['label'] ? $this->arrData['label'] : $this->arrData['name']);
-				break;
+				break;  
         
 			case 'available':
 				if (!$this->enabled && BE_USER_LOGGED_IN !== true)
@@ -295,19 +295,18 @@ abstract class IsotopePayment extends Frontend
 	 * Get the checkout surcharge for this shipping method
 	 */
 	public function getSurcharge($objCollection)
-	{
+	{   
 		if ($this->arrData['price'] == 0)
 		{
 			return false;
 		} 
-
+    
 		return $this->Isotope->calculateSurcharge(
 								$this->arrData['price'],
 								($GLOBALS['TL_LANG']['MSC']['paymentLabel'] . ' (' . $this->label . ')'),
 								$this->arrData['tax_class'],
 								$objCollection->getProducts(),
-								$this,
-                $this->Isotope->Cart->subTotal2);
+								$this);
 	}
 
 

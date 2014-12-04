@@ -44,7 +44,7 @@ class ShippingFlat extends IsotopeShipping
 		{
 			case 'price':
 				return $this->Isotope->calculatePrice($this->getPrice(), $this, 'price', $this->arrData['tax_class']);
-				break;
+				break;              
 		}
 
 		return parent::__get($strKey);
@@ -84,7 +84,7 @@ class ShippingFlat extends IsotopeShipping
 		if ($blnPercentage)
 		{
 			$fltSurcharge = (float)substr($strPrice, 0, -1);
-			$fltPrice = $this->Isotope->Cart->subTotal / 100 * $fltSurcharge;
+			$fltPrice = $this->Isotope->Cart->subTotal2 / 100 * $fltSurcharge;
 		}
 		else
 		{

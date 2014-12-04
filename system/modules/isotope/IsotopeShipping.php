@@ -291,8 +291,7 @@ abstract class IsotopeShipping extends Frontend
 								($GLOBALS['TL_LANG']['MSC']['shippingLabel'] . ' (' . $this->label . ')'),
 								$this->arrData['tax_class'],
 								$objCollection->getProducts(),
-								$this,
-                $this->Isotope->Cart->subTotal2);
+								$this);
 	}
 }
 

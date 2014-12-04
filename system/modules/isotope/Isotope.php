@@ -291,14 +291,20 @@ class Isotope extends Controller
 	 * @param array
 	 * @param object
 	 */
-	public function calculateSurcharge($strPrice, $strLabel, $intTaxClass, $arrProducts, $objSource, $subTotal2 )
+	public function calculateSurcharge($strPrice, $strLabel, $intTaxClass, $arrProducts, $objSource)
 	{
 		$blnPercentage = substr($strPrice, -1) == '%' ? true : false;
+    
+    if (!is_numeric($this->Cart->subTotal2)) {
+      $fltPrice = $this->Cart->subTotal2 = $this->Cart->grandTotal;      
+    } else {
+      $fltPrice = $this->Cart->subTotal2;  
+    }
 
 		if ($blnPercentage)
 		{
 			$fltSurcharge = (float)substr($strPrice, 0, -1);
-			$fltPrice = $this->Isotope->roundPrice($subTotal2 / 100 * $fltSurcharge);
+			$fltPrice = $this->Isotope->roundPrice($fltPrice / 100 * $fltSurcharge);
 		}
 		else
 		{
